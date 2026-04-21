@@ -139,10 +139,12 @@ const state = {
   audioUnlocked: false,
   drag: null,
   hoverZoneKey: null,
+  dropEffect: null,
 };
 
 const app = document.querySelector("#app");
 let audioEngine = null;
+let dropEffectTimer = null;
 
 render();
 
@@ -204,6 +206,9 @@ function buildBoard() {
     if (state.hoverZoneKey === tier.id) {
       drop.classList.add("is-active");
     }
+    if (state.dropEffect?.zoneKey === tier.id) {
+      drop.classList.add("is-celebrating");
+    }
 
     const list = createNode("div", "album-list");
     const ids = state.tiers[tier.id];
@@ -262,6 +267,9 @@ function buildAlbumCard(album, source) {
   card.classList.toggle("is-selected", state.selectedAlbumId === album.id);
   if (state.drag?.albumId === album.id) {
     card.classList.add("is-drag-source");
+  }
+  if (state.dropEffect?.albumId === album.id && state.dropEffect?.zoneKey === source.zoneKey) {
+    card.classList.add("is-settled");
   }
 
   const cover = createNode("img", "album-card-cover");
@@ -392,6 +400,7 @@ function moveAlbum(albumId, sourceZone, sourceIndex, destination) {
   destinationList.splice(insertIndex, 0, albumId);
 
   if (destination.zoneKey !== "pool") {
+    triggerDropEffect(destination.zoneKey, albumId);
     playTierCue(destination.zoneKey);
   }
 }
@@ -460,6 +469,21 @@ function stopPreview() {
     audioEngine.stop();
     audioEngine = null;
   }
+}
+
+function triggerDropEffect(zoneKey, albumId) {
+  if (dropEffectTimer) {
+    window.clearTimeout(dropEffectTimer);
+  }
+
+  const nonce = Date.now();
+  state.dropEffect = { zoneKey, albumId, nonce };
+  dropEffectTimer = window.setTimeout(() => {
+    if (state.dropEffect?.nonce === nonce) {
+      state.dropEffect = null;
+      render();
+    }
+  }, 720);
 }
 
 function playTierCue(tierId) {
