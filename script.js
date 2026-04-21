@@ -6,6 +6,7 @@ const tiers = [
   { id: "C", color: "#c0ff7f" },
   { id: "FREE", label: "🤷", color: "#7ff9ff", emoji: true },
 ];
+const tierMap = Object.fromEntries(tiers.map((tier) => [tier.id, tier]));
 
 const tierSoundProfiles = {
   SS: { wave: "triangle", base: 523.25, notes: [0, 4, 7, 12, 16, 19], gain: 0.34, step: 0.14, duration: 0.52, filter: 4600, sparkle: 0.38 },
@@ -270,6 +271,7 @@ function buildAlbumCard(album, source) {
   }
   if (state.dropEffect?.albumId === album.id && state.dropEffect?.zoneKey === source.zoneKey) {
     card.classList.add("is-settled");
+    card.style.setProperty("--burst-color", tierMap[source.zoneKey]?.color || "#8fe7ff");
   }
 
   const cover = createNode("img", "album-card-cover");
@@ -287,6 +289,9 @@ function buildAlbumCard(album, source) {
   title.textContent = album.shortTitle;
 
   card.append(cover, year, subtitle, title);
+  if (state.dropEffect?.albumId === album.id && state.dropEffect?.zoneKey === source.zoneKey) {
+    card.append(buildCardBurst());
+  }
   card.addEventListener("pointerdown", (event) => handlePointerDown(event, album.id, source));
   return card;
 }
@@ -300,6 +305,33 @@ function buildPoolItem(album, index) {
     }),
   );
   return item;
+}
+
+function buildCardBurst() {
+  const burst = createNode("span", "album-card-burst");
+  const sparks = [
+    { x: "-22px", y: "-18px", size: "8px", delay: "0ms", rotate: "18deg" },
+    { x: "24px", y: "-14px", size: "7px", delay: "70ms", rotate: "-10deg" },
+    { x: "28px", y: "10px", size: "9px", delay: "120ms", rotate: "24deg" },
+    { x: "6px", y: "26px", size: "7px", delay: "90ms", rotate: "-18deg" },
+    { x: "-24px", y: "18px", size: "8px", delay: "150ms", rotate: "12deg" },
+    { x: "0px", y: "-28px", size: "6px", delay: "40ms", rotate: "0deg" },
+  ];
+
+  sparks.forEach((spark, index) => {
+    const node = createNode("span", "album-card-spark");
+    node.style.setProperty("--spark-x", spark.x);
+    node.style.setProperty("--spark-y", spark.y);
+    node.style.setProperty("--spark-size", spark.size);
+    node.style.setProperty("--spark-delay", spark.delay);
+    node.style.setProperty("--spark-rotate", spark.rotate);
+    if (index % 2 === 1) {
+      node.classList.add("is-diamond");
+    }
+    burst.append(node);
+  });
+
+  return burst;
 }
 
 function handlePointerDown(event, albumId, source) {
