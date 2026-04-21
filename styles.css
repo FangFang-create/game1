@@ -41,7 +41,7 @@ body {
 
 .game-stage {
   position: absolute;
-  inset: calc(11.25% + 8pt) 0 calc(11.85% - 8pt);
+  inset: calc(11.25% + 5pt) 0 calc(11.85% - 5pt);
   width: auto;
   height: auto;
   min-height: 0;
