@@ -6,7 +6,6 @@ const tiers = [
   { id: "C", color: "#c0ff7f" },
   { id: "FREE", label: "🤷", color: "#7ff9ff", emoji: true },
 ];
-const tierMap = Object.fromEntries(tiers.map((tier) => [tier.id, tier]));
 
 const tierSoundProfiles = {
   SS: { wave: "triangle", base: 523.25, notes: [0, 4, 7, 12, 16, 19], gain: 0.34, step: 0.14, duration: 0.52, filter: 4600, sparkle: 0.38 },
@@ -256,6 +255,7 @@ function buildPool() {
 }
 
 function buildAlbumCard(album, source) {
+  const shell = createNode("div", "album-card-shell");
   const card = createNode("button", "album-card");
   card.type = "button";
   card.dataset.albumId = album.id;
@@ -271,7 +271,7 @@ function buildAlbumCard(album, source) {
   }
   if (state.dropEffect?.albumId === album.id && state.dropEffect?.zoneKey === source.zoneKey) {
     card.classList.add("is-settled");
-    card.style.setProperty("--burst-color", tierMap[source.zoneKey]?.color || "#8fe7ff");
+    shell.classList.add("is-bursting");
   }
 
   const cover = createNode("img", "album-card-cover");
@@ -289,11 +289,14 @@ function buildAlbumCard(album, source) {
   title.textContent = album.shortTitle;
 
   card.append(cover, year, subtitle, title);
-  if (state.dropEffect?.albumId === album.id && state.dropEffect?.zoneKey === source.zoneKey) {
-    card.append(buildCardBurst());
-  }
   card.addEventListener("pointerdown", (event) => handlePointerDown(event, album.id, source));
-  return card;
+
+  shell.append(card);
+  if (state.dropEffect?.albumId === album.id && state.dropEffect?.zoneKey === source.zoneKey) {
+    shell.append(buildCardBurst());
+  }
+
+  return shell;
 }
 
 function buildPoolItem(album, index) {

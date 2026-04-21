@@ -204,11 +204,17 @@ body {
   height: 100%;
 }
 
+.album-card-shell {
+  position: relative;
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+}
+
 .album-card {
   position: relative;
   display: grid;
   place-items: end start;
-  flex: 0 0 auto;
   width: 56px;
   height: 56px;
   padding: 6px;
@@ -288,7 +294,6 @@ body {
 }
 
 .album-card.is-settled {
-  overflow: visible;
   animation: albumSettle 560ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -321,10 +326,10 @@ body {
   margin-left: calc(var(--spark-size) / -2);
   margin-top: calc(var(--spark-size) / -2);
   border-radius: 999px;
-  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.98) 0 28%, var(--burst-color, #8fe7ff) 50%, rgba(255, 255, 255, 0) 74%);
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 1) 0 28%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0) 74%);
   box-shadow:
-    0 0 10px rgba(188, 236, 255, 0.26),
-    0 0 18px rgba(117, 212, 255, 0.14);
+    0 0 10px rgba(255, 255, 255, 0.32),
+    0 0 18px rgba(195, 232, 255, 0.18);
   opacity: 0;
   transform: translate(var(--spark-x), var(--spark-y)) scale(0.5) rotate(var(--spark-rotate));
   animation: sparklePop 620ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
