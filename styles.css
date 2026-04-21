@@ -294,6 +294,11 @@ body {
   white-space: nowrap;
 }
 
+.album-list .album-card-title,
+.album-list .album-card-subtitle {
+  display: none;
+}
+
 .album-card-year {
   position: absolute;
   top: 6px;
@@ -389,14 +394,17 @@ body {
 
 .pool-album-name {
   width: 100%;
-  min-height: 28px;
+  min-height: 34px;
   color: rgba(244, 248, 250, 0.96);
   font-size: 10px;
   font-weight: 700;
   line-height: 1.2;
   text-align: center;
-  word-break: break-all;
-  text-wrap: balance;
+  word-break: normal;
+  overflow-wrap: normal;
+  white-space: normal;
+  text-wrap: pretty;
+  hyphens: none;
 }
 
 .pool-scroll.is-active {
